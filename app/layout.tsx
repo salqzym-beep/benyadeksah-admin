@@ -1,4 +1,3 @@
-import type { Metadata } from 'html-react-parser' // أو استبدل هذا السطر بما يناسب
 import './globals.css'
 
 export const metadata = {
