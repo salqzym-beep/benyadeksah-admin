@@ -10,7 +10,6 @@ export default function Page() {
   const [price, setPrice] = useState('');
   const [desc, setDesc] = useState('');
 
-  // الرمز السري الخاص بك أو بالأشخاص المصرح لهم
   const validToken = 'sah2026';
 
   const handleLogin = (e) => {
@@ -35,7 +34,6 @@ export default function Page() {
   return (
     <div style={{ fontFamily: 'Tahoma, sans-serif', direction: 'rtl', backgroundColor: '#f4f6f8', minHeight: '100vh', padding: '15px' }}>
       
-      {/* الهيدر */}
       <div style={{ background: '#fff', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', marginBottom: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
         <h1 style={{ fontSize: '20px', color: '#333', margin: 0 }}>🛒 بين يديك ساه - إدارة المنتجات</h1>
         
@@ -55,7 +53,6 @@ export default function Page() {
         )}
       </div>
 
-      {/* نموذج الإضافة (يظهر فقط عند إدخال الرمز الصحيح) */}
       {isAuth && (
         <div style={{ background: '#fff', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', marginBottom: '15px', border: '2px solid #0070f3' }}>
           <h3 style={{ margin: '0 0 12px 0', color: '#0070f3' }}>➕ إضافة منتج جديد</h3>
@@ -68,7 +65,6 @@ export default function Page() {
         </div>
       )}
 
-      {/* قائمة المنتجات */}
       <div style={{ background: '#fff', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
         <h3 style={{ margin: '0 0 15px 0', color: '#333' }}>📦 المنتجات الحالية ({products.length})</h3>
         
@@ -91,5 +87,5 @@ export default function Page() {
 
     </div>
   );
-          }
-              
+        }
+        
