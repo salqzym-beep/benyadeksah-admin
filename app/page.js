@@ -1,4 +1,4 @@
-export default function AdminDashboard() {
+ export default function AdminDashboard() {
   return (
     <div style={{ fontFamily: 'Tahoma, sans-serif', direction: 'rtl', backgroundColor: '#f8fafc', minHeight: '100vh', padding: '20px', margin: 0 }}>
       {/* رأس الصفحة */}
