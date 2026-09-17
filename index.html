@@ -13,10 +13,11 @@
         .btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; }
         .btn:hover { opacity: 0.9; }
         .btn-admin { background: #6c757d; }
+        .btn-buy { background: var(--success); width: 100%; margin-top: 10px; padding: 8px; }
         
         /* شبكة المنتجات للعملاء */
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
-        .product-card { background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .product-card { background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
         .product-card:hover { transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .product-title { font-size: 18px; font-weight: bold; color: var(--primary); margin-bottom: 8px; }
         .product-price { font-size: 16px; color: var(--success); font-weight: bold; margin-bottom: 8px; }
@@ -44,7 +45,7 @@
         <input type="text" id="specs" placeholder="المواصفات">
         <input type="text" id="delivery" placeholder="مدة التسليم">
         <button class="btn" onclick="addItem()" style="background: var(--success);">حفظ وإضافة صنف جديد</button>
-        <p style="font-size: 13px; color: #856404; margin-top: 10px;">* ملاحظة: الإضافة الفورية يتم حفظها في جدول البيانات وتظهر للجميع.</p>
+        <p style="font-size: 13px; color: #856404; margin-top: 10px;">* ملاحظة: يتم إضافة وتعديل المنتجات مباشرة عبر جدول جوجل شيت المرتبط.</p>
     </div>
 
     <!-- قسم العرض للعملاء -->
@@ -57,7 +58,6 @@
     const SHEET_ID = "1o6ZTYPLlt5WU7jS6c-VN9Yld2niYe7get7G894upqCM";
     const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
 
-    // تحميل البيانات عند فتح الصفحة تلقائياً لكل الزوار
     window.onload = function() {
         loadStoreData();
     };
@@ -71,7 +71,7 @@
         try {
             const response = await fetch(CSV_URL);
             const data = await response.text();
-            const rows = data.split("\n").slice(1); // تخطي صف العناوين
+            const rows = data.split("\n").slice(1);
 
             rows.forEach(row => {
                 if (row.trim() !== "") {
@@ -82,10 +82,13 @@
                         const card = document.createElement("div");
                         card.className = "product-card";
                         card.innerHTML = `
-                            <div class="product-title">${cleanCols[0]}</div>
-                            <div class="product-price">السعر: ${cleanCols[1]}</div>
-                            <div class="product-desc">المواصفات: ${cleanCols[2]}</div>
-                            <div class="product-time">مدة التسليم: ${cleanCols[3]}</div>
+                            <div>
+                                <div class="product-title">${cleanCols[0]}</div>
+                                <div class="product-price">السعر: ${cleanCols[1]}</div>
+                                <div class="product-desc">المواصفات: ${cleanCols[2]}</div>
+                                <div class="product-time">مدة التسليم: ${cleanCols[3]}</div>
+                            </div>
+                            <button class="btn btn-buy" onclick="buyProduct('${cleanCols[0]}', '${cleanCols[1]}')">🛒 اطلب الآن</button>
                         `;
                         container.appendChild(card);
                     }
@@ -97,7 +100,11 @@
         }
     }
 
-    // التحقق من الرمز السري لإظهار لوحة الإدارة فقط
+    function buyProduct(name, price) {
+        // رسالة تفاعلية عند الضغط على شراء (يمكن تحويلها لرسالة واتساب مباشرة إذا أحببت)
+        alert(`شكراً لاختيارك!\nلقد طلبت صنف: ${name}\nالسعر: ${price}\n\nسيتم التواصل معك لإتمام الطلب.`);
+    }
+
     function toggleAdmin() {
         const panel = document.getElementById("adminPanel");
         if (panel.style.display === "block") {
@@ -113,7 +120,7 @@
     }
 
     function addItem() {
-        alert("لإضافة صنف جديد، يرجى إدخاله مباشرة في جدول جوجل شيت المرتبط، وسيظهر تلقائياً لجميع العملاء هنا فوراً بعد التحديث!");
+        alert("لإضافة صنف جديد، يرجى إدخاله مباشرة في جدول جوجل شيت المرتبط.");
     }
 </script>
 
