@@ -3,109 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بين يديك ساه - إدارة المنتجات</title>
+    <title>لوحة تحكم بن يادك - إدارة البيانات</title>
     <style>
-        body { font-family: Tahoma, sans-serif; background: #f5f7fa; margin: 0; padding: 15px; }
-        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        h2 { color: #333; text-align: center; margin-bottom: 20px; font-size: 20px; }
-        .login-box, .add-box { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
-        input, textarea { padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; font-size: 14px; }
-        button { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; }
-        .btn-blue { background: #0070f3; color: #fff; }
-        .btn-green { background: #22863a; color: #fff; }
-        .success-msg { background: #e6ffed; color: #22863a; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 20px; font-weight: bold; font-size: 13px; }
-        .product-card { padding: 12px; background: #fafafa; border: 1px solid #eee; border-radius: 8px; display: flex; justifyContent: space-between; alignItems: center; margin-bottom: 10px; }
-        .hidden { display: none; }
+        body { font-family: Tahoma, sans-serif; background: #f4f6f9; margin: 0; padding: 20px; direction: rtl; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { color: #333; text-align: center; }
+        .login-box, .dashboard { display: none; }
+        input, button { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background: #0056b3; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background: #007bff; color: white; }
+        .loading { text-align: center; color: #666; font-style: italic; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🛒 بين يديك ساه - إدارة المنتجات</h2>
-
-    <!-- قسم تسجيل الدخول -->
-    <div id="loginSection" class="login-box">
-        <input type="password" id="passInput" placeholder="أدخل الرمز السري...">
-        <button class="btn-blue" onclick="checkLogin()">دخول</button>
+    <!-- شاشة تسجيل الدخول -->
+    <div id="loginScreen" class="login-box" style="display: block;">
+        <h2>تسجيل الدخول لوحة الإدارة</h2>
+        <input type="password" id="passCode" placeholder="أدخل الرمز السري">
+        <button onclick="checkLogin()">دخول</button>
+        <p id="loginError" style="color: red; text-align: center; display: none;">الرمز السري غير صحيح!</p>
     </div>
 
-    <div id="successMsg" class="success-msg hidden">✓ تم تسجيل الدخول بنجاح - أضف منتجاتك</div>
-
-    <!-- قسم إضافة منتج (مخفي حتى يتم الدخول) -->
-    <div id="addSection" class="hidden" style="background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 20px;">
-        <h4 style="margin: 0 0 10px 0; color: #0070f3;">إضافة منتج جديد</h4>
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-            <input type="text" id="prodName" placeholder="اسم المنتج">
-            <input type="text" id="prodPrice" placeholder="السعر">
-            <textarea id="prodDesc" placeholder="الوصف"></textarea>
-            <button class="btn-green" onclick="addProduct()">حفظ وإضافة</button>
+    <!-- لوحة التحكم -->
+    <div id="dashboardScreen" class="dashboard">
+        <h2>لوحة التحكم المباشرة</h2>
+        <p style="text-align: center; color: green;">متصل بجدول بيانات جوجل بنجاح 🚀</p>
+        
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <h3>إضافة صنف جديد</h3>
+            <input type="text" id="item" placeholder="اسم الصنف">
+            <input type="text" id="price" placeholder="السعر">
+            <input type="text" id="specs" placeholder="المواصفات">
+            <input type="text" id="delivery" placeholder="مدة التسليم">
+            <button onclick="addItem()" id="saveBtn">حفظ وإضافة</button>
         </div>
-    </div>
 
-    <h3 style="border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; color: #444; font-size: 16px;">قائمة المنتجات (<span id="count">0</span>)</h3>
-    
-    <div id="productsList" style="margin-top: 15px;">
-        <p style="color: #777; text-align: center;" id="emptyMsg">لا توجد منتجات مضافة حالياً.</p>
+        <h3>البيانات المسجلة في الجدول</h3>
+        <div id="loadingMsg" class="loading">جاري جلب البيانات من السحابة...</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>الصنف</th>
+                    <th>السعر</th>
+                    <th>المواصفات</th>
+                    <th>مدة التسليم</th>
+                </tr>
+            Ref</thead>
+            <tbody id="dataTable"></tbody>
+        </table>
+        <button onclick="loadData()" style="background: #28a745; margin-top: 20px;">تحديث البيانات</button>
     </div>
 </div>
 
 <script>
-    const validToken = 'sah2026';
-    let products = [];
+    // رابط جدول البيانات الخاص بك
+    const SHEET_ID = "1o6ZTYPLlt5WU7jS6c-VN9Yld2niYe7get7G894upqCM";
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
 
     function checkLogin() {
-        const val = document.getElementById('passInput').value;
-        if (val === validToken) {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('successMsg').classList.remove('hidden');
-            document.getElementById('addSection').classList.remove('hidden');
+        const code = document.getElementById("passCode").value;
+        if (code === "sah2026") {
+            document.getElementById("loginScreen").style.display = "none";
+            document.getElementById("dashboardScreen").style.display = "block";
+            loadData();
         } else {
-            alert('الرمز خطأ!');
+            document.getElementById("loginError").style.display = "block";
         }
     }
 
-    function addProduct() {
-        const name = document.getElementById('prodName').value;
-        const price = document.getElementById('prodPrice').value;
-        const desc = document.getElementById('prodDesc').value;
+    async function loadData() {
+        const loading = document.getElementById("loadingMsg");
+        const tbody = document.getElementById("dataTable");
+        loading.style.display = "block";
+        tbody.innerHTML = "";
 
-        if (!name || !price) {
-            alert('الرجاء إدخال الاسم والسعر على الأقل');
-            return;
+        try {
+            const response = await fetch(CSV_URL);
+            const data = await response.text();
+            const rows = data.split("\n").slice(1); // تخطي صف العناوين
+
+            rows.forEach(row => {
+                if (row.trim() !== "") {
+                    // تحليل صف CSV مع مراعاة علامات التنصيص
+                    const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || row.split(",");
+                    const cleanCols = cols.map(c => c.replace(/^"|"$/g, '').trim());
+                    
+                    if(cleanCols.length >= 4) {
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `<td>${cleanCols[0]}</td><td>${cleanCols[1]}</td><td>${cleanCols[2]}</td><td>${cleanCols[3]}</td>`;
+                        tbody.appendChild(tr);
+                    }
+                }
+            });
+            loading.style.display = "none";
+        } catch (error) {
+            loading.innerText = "حدث خطأ أثناء تحميل البيانات.";
         }
-
-        const newP = { id: Date.now(), name, price, desc };
-        products.unshift(newP);
-
-        document.getElementById('prodName').value = '';
-        document.getElementById('prodPrice').value = '';
-        document.getElementById('prodDesc').value = '';
-
-        renderProducts();
     }
 
-    function renderProducts() {
-        const list = document.getElementById('productsList');
-        document.getElementById('count').innerText = products.length;
-
-        if (products.length === 0) {
-            list.innerHTML = '<p style="color: #777; text-align: center;" id="emptyMsg">لا توجد منتجات مضافة حالياً.</p>';
-            return;
-        }
-
-        let html = '';
-        products.forEach(p => {
-            html += `
-                <div class="product-card">
-                    <div>
-                        <h4 style="margin: 0 0 4px 0; color: #222;">${p.name}</h4>
-                        <p style="margin: 0; font-size: 13px; color: #666;">${p.desc}</p>
-                    </div>
-                    <span style="font-weight: bold; color: #0070f3; font-size: 15px;">${p.price}</span>
-                </div>
-            `;
-        });
-        list.innerHTML = html;
+    function addItem() {
+        alert("لإضافة بيانات جديدة مباشرة، يمكنك إضافتها الآن بسهولة من تطبيق جوجل شิت أو جدول البيانات، وستظهر فوراً هنا لجميع المستخدمين بعد التحديث!");
     }
 </script>
 
